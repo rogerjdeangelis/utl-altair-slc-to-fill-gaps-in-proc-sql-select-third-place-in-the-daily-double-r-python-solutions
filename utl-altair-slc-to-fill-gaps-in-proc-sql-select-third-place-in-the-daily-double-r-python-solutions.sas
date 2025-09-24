@@ -36,6 +36,10 @@ CONTENTS  (proc sql does not support the rank function)
      2 slc python sql
        (see the compact json below)
        I could not get export/import tp work with python
+       
+github
+https://tinyurl.com/yc3d84r5
+https://github.com/rogerjdeangelis/utl-altair-slc-to-fill-gaps-in-proc-sql-select-third-place-in-the-daily-double-r-python-solutions
 
 related to
 https://communities.sas.com/t5/SAS-Programming/6th-max-value/m-p/703006#M215365
