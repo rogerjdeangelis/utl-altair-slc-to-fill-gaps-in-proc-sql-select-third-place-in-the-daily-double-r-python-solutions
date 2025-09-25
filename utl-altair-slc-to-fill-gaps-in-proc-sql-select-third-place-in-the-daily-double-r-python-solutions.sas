@@ -81,6 +81,7 @@ run;quit;
 
 
 &_init_;
+options set=RHOME "D:\d451";
 proc r;
 export data=sd1.have r=have;
 submit;
