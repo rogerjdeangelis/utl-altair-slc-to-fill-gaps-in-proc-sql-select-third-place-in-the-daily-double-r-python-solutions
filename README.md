@@ -83,6 +83,7 @@ Altair SLC to fill gaps in proc sql select third place in the daily double r pyt
 
 
     &_init_;
+    options set=RHOME "D:\d451";
     proc r;
     export data=sd1.have r=have;
     submit;
