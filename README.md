@@ -1,5 +1,3 @@
-# utl-altair-slc-to-fill-gaps-in-proc-sql-select-third-place-in-the-daily-double-r-python-solutions
-Altair SLC to fill gaps in proc sql select third place in the daily double r python solutions
     %let pgm=utl-altair-slc-to-fill-gaps-in-proc-sql-select-third-place-in-the-daily-double-r-python-solutions;
 
     %stop_submission;
@@ -38,6 +36,9 @@ Altair SLC to fill gaps in proc sql select third place in the daily double r pyt
          2 slc python sql
            (see the compact json below)
            I could not get export/import tp work with python
+
+         3 slc pure python
+           Insired by Mayk (link not available)
 
     github
     https://tinyurl.com/yc3d84r5
@@ -464,6 +465,67 @@ Altair SLC to fill gaps in proc sql select third place in the daily double r pyt
     1867      ODS _ALL_ CLOSE;
     1868      FILENAME WPSWBHTM CLEAR;
 
+    &_init_;
+    proc python;
+    submit;
+    import pandas as pd
+    df = pd.DataFrame({
+        "race": [1,1,1,1,1, 2,2,2,2,2],
+        "horse": ["lady_Joyce","gent_Thomas","gent_Henry","gent_Alfred","gent_William",
+                  "gent_John","lady_Alice","lady_Carol","lady_Mary","lady_Barbara"],
+    })
+    print(df)
+
+    /*____                                      _   _
+    |___ /   _ __  _   _ _ __ ___   _ __  _   _| |_| |__   ___  _ __
+      |_ \  | `_ \| | | | `__/ _ \ | `_ \| | | | __| `_ \ / _ \| `_ \
+     ___) | | |_) | |_| | | |  __/ | |_) | |_| | |_| | | | (_) | | | |
+    |____/  | .__/ \__,_|_|  \___| | .__/ \__, |\__|_| |_|\___/|_| |_|
+            |_|                    |_|    |___/
+    */
+
+    &_init_;
+    %utlfkil(d:/rds/pywant.rds);
+
+    libname sd1 sas7bdat "d:/sd1";
+    options noerrorabend;
+    options set=PYTHONHOME "D:\python310";
+    proc python;
+    submit;
+    import pyreadstat as ps
+    import pandas as pd
+    import pyreadr as pr
+    df,meta = ps.read_sas7bdat('d:/sd1/have.sas7bdat')
+    print(df)
+    third_place_horses = (df.sort_values(['RACE', 'TIME'])
+      .groupby('RACE')
+      .nth(2)  # 0-indexed, so 2 means third position
+      .reset_index())
+    print(third_place_horses)
+    pr.write_rds('d:/rds/pywant.rds',third_place_horses)
+    endsubmit;
+    ;quit;
+
+    /*---- CONVERT RDS FILE TO A SAS TABLE ----*/
+
+    options noerrorabend;
+    options set=RHOME "D:\d451";
+    %wps_py2sastable(
+       inp=d:/rds/pywant.rds
+      ,out=want );
+
+    proc print data=work.want;
+    run;quit;
+
+
+    OUTPUT
+    ------
+
+    Obs    INDEX      HORSE       RACE    TIME
+
+     1       1      gent_Henry      1      102
+     2       9      lady_Carol      2      102
+
     /*              _
       ___ _ __   __| |
      / _ \ `_ \ / _` |
@@ -471,3 +533,4 @@ Altair SLC to fill gaps in proc sql select third place in the daily double r pyt
      \___|_| |_|\__,_|
 
     */
+
